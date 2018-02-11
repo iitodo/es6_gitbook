@@ -1,0 +1,16 @@
+{
+    "root": "./book",
+	"title": "ECMAScript 6 入门（2017-12-22）",
+	"description": "《ECMAScript 6 入门》是一本开源的 JavaScript 语言教程，全面介绍 ECMAScript 6 新引入的语法特性。",
+	"author": "阮一峰",
+	"language": "zh-hans",
+	"structure": {
+		"readme": "README.md",
+		"summary": "SUMMARY.md"
+	},
+	"styles": {
+		"website": "css/app.css",
+        "mobi": "css/app.css",
+        "epub": "css/app.css"
+    }
+}

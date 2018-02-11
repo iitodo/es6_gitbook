@@ -1,0 +1,20 @@
+{
+  "name": "es6_gitbook",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "compile": "babel src -d dist -s",
+    "start": "npm run compile && node dist/index.js",
+    "clean": "rmdir /s /q dist && mkdir dist",
+    "run": "npm run compile && node dist/index.js"
+  },
+  "dependencies": {
+    "express": "^4.16.2",
+    "lowdb": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
+}
