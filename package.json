@@ -6,11 +6,10 @@
   "scripts": {
     "compile": "babel src -d dist -s",
     "clean": "rmdir /s /q book;dist && mkdir dist || mkdir dist",
-    "run": "npm run compile && node dist/index.js",
+    "run": "npm run clean && npm run compile && node dist/index.js",
     "debug": "node --inspect-brk dist/index.js"
   },
   "dependencies": {
-    "express": "^4.16.2",
     "lowdb": "^1.0.0"
   },
   "devDependencies": {
