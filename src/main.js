@@ -16,35 +16,40 @@ export default function() {
     initdb();
     handleSidebar();
     let index = 1;
-    db.get(BOOK_TABLE).forEach((item) => {
-        if(item.flag === 'content' && !/^.*readme\.md$/ui.test(item.path)) {
-            item.children = handleMdFile(item.path);
-            item.label = `第${ index }章 ${ item.label }`
-            item.path = CHAPTER_PREFIX + index + '/README.md';
-            item.needReadmeFile = true;
-            index++;
-        }
-    }).write();
+    db.get(BOOK_TABLE)
+        .forEach(item => {
+            if (item.flag === 'content' && !/^.*readme\.md$/ui.test(item.path)) {
+                item.children = handleMdFile(item.path);
+                item.label = `第${ index }章 ${ item.label }`;
+                item.path = CHAPTER_PREFIX + index + '/README.md';
+                item.needReadmeFile = true;
+                index++;
+            }
+        })
+        .write();
 
-    db.get(BOOK_TABLE).value().forEach((item, index) => {
-        if(item.needReadmeFile) {
-            createReadmeFile(item);
-        }
-    });
+    db.get(BOOK_TABLE).value()
+        .forEach(item => {
+            if (item.needReadmeFile) {
+                createReadmeFile(item);
+            }
+        });
 }
 
 function initdb() {
-    if(db.has(BOOK_NAME).value()) {
-        console.log(`旧${BOOK_NAME}数据:`);
+    if (db.has(BOOK_NAME).value()) {
+        console.log(`旧${ BOOK_NAME }数据:`);
         console.log(db.get(BOOK_NAME).value());
     }
-    if(db.has(BOOK_TABLE).value()) {
-        console.log(`旧${BOOK_TABLE}数据:`);
+    if (db.has(BOOK_TABLE).value()) {
+        console.log(`旧${ BOOK_TABLE }数据:`);
         console.log(db.get(BOOK_TABLE).value());
     }
     db.set(BOOK_NAME, new Map()).write();
     db.set(BOOK_TABLE, []).write();
-    db.get(BOOK_NAME).set('table', BOOK_TABLE).write();
+    db.get(BOOK_NAME)
+        .set('table', BOOK_TABLE)
+        .write();
 }
 
 function handleSidebar() {
@@ -60,17 +65,17 @@ function handleSidebar() {
             needReadmeFile: false,
             children: null,
         };
- 
+
         dataItem.label = item.match(/^(?:\d\.|[*+-])\s+\[(.*)\]\(.*\)$/u)[1];
         let path = item.match(/^(?:\d\.|[*+-])\s+\[.*\]\((.*)\)$/u)[1];
-        if(/^\d\./.test(item)) {
+        if (/^\d\./.test(item)) {
             dataItem.flag = 'content';
         }
         else {
             dataItem.flag = 'quote';
         }
 
-        if(/^#/.test(path)) {
+        if (/^#/.test(path)) {
             dataItem.path = path.substr(1) + '.md';
         }
         else {
@@ -80,32 +85,34 @@ function handleSidebar() {
         datas.push(dataItem);
     });
 
-    db.get(BOOK_TABLE).push(...datas).write();
-    console.log(`${path.basename(SIDEBAR_FILE_PATH)}文件处理完成`);
+    db.get(BOOK_TABLE)
+        .push(...datas)
+        .write();
+    console.log(`${ path.basename(SIDEBAR_FILE_PATH) }文件处理完成`);
 }
 
 function handleMdFile(path) {
     let body = fs.readFileSync(BOOK_SRC_PATH + path, {encoding: 'utf8', flag: 'r'});
     body = body.replace(/^```(?:.|\r|\n)*?^```$/ugm, '');
-    let datas = []; 
+    let datas = [];
     let items = body.match(/^##\s.*$/ugm);
-    if(items) {
+    if (items) {
         items.forEach(item => {
             datas.push({
                 flag: 'content',
                 label: item.match(/^##\s(.*)$/u)[1],
-                path: path + "#" + item.match(/^##\s(.*)$/u)[1],
+                path: path + '#' + item.match(/^##\s(.*)$/u)[1],
                 index: '2',
             });
         });
     }
 
-    console.log(`${path}文件处理完成`);
+    console.log(`${ path }文件处理完成`);
     return datas;
 }
 
 function checkAndMkdir(filePath) {
-    if(!fs.existsSync(filePath)) {
+    if (!fs.existsSync(filePath)) {
         checkAndMkdir(path.dirname(filePath));
         fs.mkdirSync(filePath);
     }
@@ -115,11 +122,11 @@ function createReadmeFile(info) {
     checkAndMkdir(path.dirname(BOOK_PATH + info.path));
     let fd = fs.openSync(BOOK_PATH + info.path, 'w');
     fs.writeSync(fd, `# ${ info.label }\n\n`, 'utf8');
-    if(info.children) {
+    if (info.children) {
         info.children.forEach(item => {
             fs.writeSync(fd, `* [${ item.label }](${ item.path })\n`, 'utf8');
         });
     }
     fs.closeSync(fd);
-    console.log(`生成${info.path}文件完成`);
+    console.log(`生成${ info.path }文件完成`);
 }
