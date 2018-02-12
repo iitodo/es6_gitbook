@@ -1,13 +1,13 @@
 {
   "name": "es6_gitbook",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "compile": "babel src -d dist -s",
-    "start": "npm run compile && node dist/index.js",
-    "clean": "rmdir /s /q dist && mkdir dist",
-    "run": "npm run compile && node dist/index.js"
+    "clean": "rmdir /s /q book;dist && mkdir dist || mkdir dist",
+    "run": "npm run compile && node dist/index.js",
+    "debug": "node --inspect-brk dist/index.js"
   },
   "dependencies": {
     "express": "^4.16.2",
