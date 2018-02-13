@@ -29,8 +29,6 @@ export default function() {
         .set('bookSummary', bookSummary)
         .write();
 
-    console.log(bookSummary);
-
     createSummaryFile(bookSummary);
 
     bookSummary.body
@@ -114,10 +112,10 @@ function handleMdFile(path) {
     let datas = [];
     let items = body.match(/^##\s.*$/ugm);
     if (items) {
-        items.forEach((item, index) => {
+        items.forEach(item => {
             datas.push({
                 flag: 'content',
-                label: `${ index + 1 }. ${ item.match(/^##\s(.*)$/u)[1]}`,
+                label: item.match(/^##\s(.*)$/u)[1],
                 path: path + '#' + item.match(/^##\s(.*)$/u)[1],
                 index: '2',
             });
@@ -148,8 +146,8 @@ function createSummaryFile(list) {
     list.body.forEach(item => {
         fs.writeSync(fd, `* [${ item.label }](${ item.path })\n`, 'utf8');
         if(item.children) {
-            item.children.forEach(child => {
-                fs.writeSync(fd, `    * [${ child.label }](${ child.path })\n`, 'utf8');
+            item.children.forEach((child, index) => {
+                fs.writeSync(fd, `    * [${ index + 1 }. ${ child.label }](${ child.path })\n`, 'utf8');
             });
         }
     });
@@ -168,8 +166,8 @@ function createReadmeFile(info) {
     let fd = fs.openSync(BOOK_PATH + info.path, 'w');
     fs.writeSync(fd, `# ${ info.label }\n\n`, 'utf8');
     if (info.children) {
-        info.children.forEach(item => {
-            fs.writeSync(fd, `* [${ item.label }](${ item.path })\n`, 'utf8');
+        info.children.forEach((item, index) => {
+            fs.writeSync(fd, `${ index + 1 }. [${ item.label }](${ item.path })\n`, 'utf8');
         });
     }
     fs.closeSync(fd);
