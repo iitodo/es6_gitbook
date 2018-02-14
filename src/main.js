@@ -167,7 +167,7 @@ function createReadmeFile(info) {
     fs.writeSync(fd, `# ${ info.label }\n\n`, 'utf8');
     if (info.children) {
         info.children.forEach((item, index) => {
-            fs.writeSync(fd, `${ index + 1 }. [${ item.label }](${ item.path })\n`, 'utf8');
+            fs.writeSync(fd, `${ index + 1 }. [${ item.label }](../${ item.path.replace('docs/', '') })\n`, 'utf8');
         });
     }
     fs.closeSync(fd);
